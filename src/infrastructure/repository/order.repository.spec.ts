@@ -81,4 +81,72 @@ describe('Order repository test', () => {
       ],
     })
   })
+
+  it('should update a order', async () => {
+    const customerRepository = new CustomerRepository()
+    const customer = new Customer('123', 'Customer 1')
+    const address = new Address('Street 1', 1, 'Zipcode 1', 'City 1')
+    customer.changeAddress(address)
+    await customerRepository.create(customer)
+
+    const productRepository = new ProductRepository()
+    const product = new Product('123', 'Product 1', 10)
+    await productRepository.create(product)
+
+    const orderItem = new OrderItem(
+      '1',
+      product.name,
+      product.price,
+      2,
+      product.id,
+    )
+
+    const order = new Order('123', '123', [orderItem])
+
+    const orderRepository = new OrderRepository()
+    await orderRepository.create(order)
+
+    const orderItemChanged = new OrderItem(
+      '1',
+      'Produto alterado',
+      product.price,
+      2,
+      product.id,
+    )
+
+    const orderItemIndex = order.items.findIndex(
+      (item) => item.id === orderItemChanged.id,
+    )
+
+    if (orderItemIndex !== -1) {
+      order.items[orderItemIndex] = orderItemChanged
+    } else {
+      order.items.push(orderItemChanged)
+    }
+
+    await orderRepository.update(order)
+
+    const orderModelChanged = await OrderModel.findOne({
+      where: { id: order.id },
+      include: ['items'],
+    })
+
+    console.log('Valor:', orderModelChanged.toJSON())
+
+    expect(orderModelChanged.toJSON()).toStrictEqual({
+      id: order.id,
+      customer_id: order.customerId,
+      total: order.total(),
+      items: [
+        {
+          id: orderItemChanged.id,
+          name: orderItemChanged.name,
+          price: orderItemChanged.price,
+          quantity: orderItemChanged.quantity,
+          order_id: '123',
+          product_id: orderItemChanged.productId,
+        },
+      ],
+    })
+  })
 })
