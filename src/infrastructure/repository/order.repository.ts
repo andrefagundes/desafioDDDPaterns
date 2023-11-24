@@ -60,6 +60,7 @@ export default class OrderRepository implements OrderRepositoryInterface {
         where: {
           id,
         },
+        include: [{ model: OrderItemModel, as: 'items' }],
         rejectOnEmpty: true,
       })
     } catch (error) {
@@ -83,6 +84,25 @@ export default class OrderRepository implements OrderRepositoryInterface {
   }
 
   async findAll(): Promise<Order[]> {
-    throw new Error('No Implement')
+    const orders = await OrderModel.findAll({
+      include: [{ model: OrderItemModel, as: 'items' }],
+    })
+
+    const ordersModel = orders.map((order) => {
+      const items: OrderItem[] = order.items.map(
+        (item) =>
+          new OrderItem(
+            item.id,
+            item.name,
+            item.price,
+            item.quantity,
+            item.product_id,
+          ),
+      )
+
+      return new Order(order.id, order.customer_id, items)
+    })
+
+    return ordersModel
   }
 }
