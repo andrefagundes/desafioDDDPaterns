@@ -6,10 +6,10 @@ export default class CustomerAddressChangedHandler
 {
   handle(event: CustomerAddressChangedEvent): void {
     const { id, name, Address } = event.eventData
-    const { _street, _number, _zip, _city } = Address
+    const { street, number, zip, city } = Address
 
     console.log(
-      `Endereço do cliente: ${id}, ${name} alterado para: ${_street}, ${_number}, ${_zip}, ${_city}`,
+      `Endereço do cliente: ${id}, ${name} alterado para: ${street}, ${number}, ${zip}, ${city}`,
     )
   }
 }
