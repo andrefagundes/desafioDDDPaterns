@@ -1,12 +1,12 @@
 import Address from '../../entity/address'
 import Customer from '../../entity/customer'
-import CustomerAddressChangedEvent from '../customer/customer-address-changed.event'
-import CustomerCreated1Event from '../customer/customer-created1.event'
-import CustomerCreated2Event from '../customer/customer-created2.event'
-import CustomerAddressChangedHandler from '../customer/handler/customer-address-changed.handler'
-import CustomerCreated1 from '../customer/handler/customer-created1.handler'
-import CustomerCreated2 from '../customer/handler/customer-created2.handler'
-import EventDispatcher from './event-dispatcher'
+import CustomerAddressChangedEvent from './customer-address-changed.event'
+import CustomerCreated1Event from './customer-created1.event'
+import CustomerCreated2Event from './customer-created2.event'
+import CustomerAddressChangedHandler from './handler/customer-address-changed.handler'
+import CustomerCreated1 from './handler/customer-created1.handler'
+import CustomerCreated2 from './handler/customer-created2.handler'
+import EventDispatcher from '../@shared/event-dispatcher'
 
 describe('Domain events tests', () => {
   enum eventName {
