@@ -1,12 +1,11 @@
 import Address from '../../entity/address'
 import Customer from '../../entity/customer'
+import EventDispatcher from '../@shared/event-dispatcher'
 import CustomerAddressChangedEvent from './customer-address-changed.event'
-import CustomerCreated1Event from './customer-created1.event'
-import CustomerCreated2Event from './customer-created2.event'
+import CustomerCreatedEvent from './customer-created.event'
 import CustomerAddressChangedHandler from './handler/customer-address-changed.handler'
 import CustomerCreated1 from './handler/customer-created1.handler'
 import CustomerCreated2 from './handler/customer-created2.handler'
-import EventDispatcher from '../@shared/event-dispatcher'
 
 describe('Domain events tests', () => {
   enum eventName {
@@ -182,37 +181,36 @@ describe('Domain events tests', () => {
 
   it('should notify all events', () => {
     const eventDispatcher = new EventDispatcher()
-
     const CustomerCreated1Handler = new CustomerCreated1()
     const CustomerCreated2Handler = new CustomerCreated2()
     const CustomerAddressChangedEventHandler =
       new CustomerAddressChangedHandler()
 
-    const spyEventHandler1 = jest.spyOn(CustomerCreated1Handler, 'handle')
-    const spyEventHandler2 = jest.spyOn(CustomerCreated2Handler, 'handle')
-    const spyEventHandler3 = jest.spyOn(
+    const spyEventCustomerHandler1 = jest.spyOn(
+      CustomerCreated1Handler,
+      'handle',
+    )
+    const spyEventCustomerHandler2 = jest.spyOn(
+      CustomerCreated2Handler,
+      'handle',
+    )
+    const spyEventAddressHandler3 = jest.spyOn(
       CustomerAddressChangedEventHandler,
       'handle',
     )
 
-    eventDispatcher.register(
-      eventName.CustomerCreated1Event,
-      CustomerCreated1Handler,
-    )
-    eventDispatcher.register(
-      eventName.CustomerCreated2Event,
-      CustomerCreated2Handler,
-    )
+    eventDispatcher.register('CustomerCreatedEvent', CustomerCreated1Handler)
+    eventDispatcher.register('CustomerCreatedEvent', CustomerCreated2Handler)
     eventDispatcher.register(
       eventName.CustomerAddressChangedEvent,
       CustomerAddressChangedEventHandler,
     )
 
     expect(
-      eventDispatcher.getEventHandlers[eventName.CustomerCreated1Event][0],
+      eventDispatcher.getEventHandlers['CustomerCreatedEvent'][0],
     ).toMatchObject(CustomerCreated1Handler)
     expect(
-      eventDispatcher.getEventHandlers[eventName.CustomerCreated2Event][0],
+      eventDispatcher.getEventHandlers['CustomerCreatedEvent'][1],
     ).toMatchObject(CustomerCreated2Handler)
     expect(
       eventDispatcher.getEventHandlers[
@@ -220,23 +218,25 @@ describe('Domain events tests', () => {
       ][0],
     ).toMatchObject(CustomerAddressChangedEventHandler)
 
+    const CustomerCreated = new CustomerCreatedEvent(null)
+    eventDispatcher.notify(CustomerCreated)
+
+    expect(spyEventCustomerHandler1).toHaveBeenCalled()
+    expect(spyEventCustomerHandler2).toHaveBeenCalled()
+
     const customer = new Customer('1', 'Customer 1')
-    const customerCreated1Event = new CustomerCreated1Event(null)
-    const customerCreated2Event = new CustomerCreated2Event(null)
-    const address = new Address('Rua Sebastião Alves', 450, '38770-000', 'João Pinheiro')
-
+    const address = new Address(
+      'Rua Sebastião Alves',
+      450,
+      '38770-000',
+      'João Pinheiro',
+    )
     customer.changeAddress(address)
-
     const customerAddressChangedEvent = new CustomerAddressChangedEvent(
       customer,
     )
 
-    eventDispatcher.notify(customerCreated1Event)
-    eventDispatcher.notify(customerCreated2Event)
     eventDispatcher.notify(customerAddressChangedEvent)
-
-    expect(spyEventHandler1).toHaveBeenCalled()
-    expect(spyEventHandler2).toHaveBeenCalled()
-    expect(spyEventHandler3).toHaveBeenCalled()
+    expect(spyEventAddressHandler3).toHaveBeenCalled()
   })
 })

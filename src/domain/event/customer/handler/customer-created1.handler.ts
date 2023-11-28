@@ -1,5 +1,5 @@
 import EventHandlerInterface from '../../@shared/event-handler.interface'
-import CustomerCreated1Event from '../customer-created1.event'
+import CustomerCreated1Event from '../customer-created.event'
 
 export default class CustomerCreated1
   implements EventHandlerInterface<CustomerCreated1Event>
