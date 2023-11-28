@@ -235,8 +235,8 @@ describe('Domain events tests', () => {
     const customerAddressChangedEvent = new CustomerAddressChangedEvent(
       customer,
     )
-
     eventDispatcher.notify(customerAddressChangedEvent)
+
     expect(spyEventAddressHandler3).toHaveBeenCalled()
   })
 })
