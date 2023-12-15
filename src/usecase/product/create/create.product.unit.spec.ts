@@ -9,8 +9,8 @@ describe('Unit test create product use case', () => {
   beforeEach(() => {
     input = {
       type: 'a',
-      name: 'Tênis',
-      price: 10,
+      name: 'T-shirt',
+      price: 200,
     }
 
     productRepository = {

@@ -20,8 +20,8 @@ describe('Integration test create product use case', () => {
 
     input = {
       type: 'a',
-      name: 'Tênis',
-      price: 10,
+      name: 'T-shirt',
+      price: 109,
     }
 
     sequelize.addModels([ProductModel])
