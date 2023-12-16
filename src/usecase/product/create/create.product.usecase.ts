@@ -6,7 +6,11 @@ import {
 } from './create.product.dto'
 
 export default class CreateProductUseCase {
-  constructor(private readonly productRepository: IProductRepository) {}
+  private readonly productRepository: IProductRepository
+
+  constructor(productRepository: IProductRepository) {
+    this.productRepository = productRepository
+  }
 
   async execute(input: InputCreateProductDTO): Promise<OutputCreateProductDTO> {
     const product = ProductFactory.create(input.type, input.name, input.price)
